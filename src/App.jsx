@@ -1,10 +1,8 @@
 import { useState, React } from 'react';
-import Moment from 'moment';
 
 export function App() {
   const [city, setCity] = useState('');
   const [weatherForecast, setweatherForecast] = useState(null);
-  Moment.locale('pt');
 
   function handleChange(e) {
     setCity(e.target.value);
@@ -23,12 +21,9 @@ export function App() {
         }
       })
       .then((data) => {
-        console.log(data);
         setweatherForecast(data);
       })
-      .catch((error) => {
-        console.log(error);
-      });
+      .catch((error) => {});
   }
   return (
     <div>
