@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, React } from 'react';
+import Moment from 'moment';
 
 export function App() {
   const [city, setCity] = useState('');
   const [weatherForecast, setweatherForecast] = useState(null);
+  Moment.locale('pt');
+
   function handleChange(e) {
     setCity(e.target.value);
-    console.log(city);
   }
 
   function handleSearch() {
@@ -15,11 +17,17 @@ export function App() {
       .then((response) => {
         if (response.status === 200) {
           return response.json();
+        } else if (city === '' || response.status !== 200) {
+          alert('Insira uma cidade válida');
+          setCity('');
         }
       })
       .then((data) => {
         console.log(data);
         setweatherForecast(data);
+      })
+      .catch((error) => {
+        console.log(error);
       });
   }
   return (
@@ -30,10 +38,10 @@ export function App() {
 
       <main className="container">
         <div className="jumbotron">
-          <h1>Verifique agora a previsão do tempo d asua cidade!</h1>
+          <h1>Verifique agora a previsão do tempo da sua cidade!</h1>
           <p className="lead">
             Digite o nome da sua cidade no campo abaixo e em seguida clique em
-            pesquisar
+            pesquisar.
           </p>
 
           <div className="row mb-4">
@@ -54,16 +62,27 @@ export function App() {
           {weatherForecast ? (
             <div>
               <div className="mt-4 d-flex align-items-center">
-                <div>
-                  <img src={weatherForecast.current.condition.icon} />
+                <div className=" d-flex flex-column align-items-center">
+                  <img
+                    src={weatherForecast.current.condition.icon}
+                    width="100px"
+                  />
+                  <p className="lead">
+                    {weatherForecast.current.condition.text}
+                  </p>
                 </div>
                 <div>
-                  <h3>
-                    Hoje o dia está: {weatherForecast.current.condition.text}
-                  </h3>
-                  <p className="lead">
-                    Temperatura: {weatherForecast.current.temp_c}
-                  </p>
+                  <div className=" d-flex align-items-center">
+                    <h1>{weatherForecast.current.temp_c}</h1>
+                    <p>ºC</p>
+                  </div>
+                  <div className="align-items-center">
+                    <p className="lead">
+                      {weatherForecast.location.name} |{' '}
+                      {weatherForecast.location.region}
+                    </p>
+                    <p className="lead">{weatherForecast.location.localtime}</p>
+                  </div>
                 </div>
               </div>
             </div>
